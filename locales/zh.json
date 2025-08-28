@@ -31,7 +31,39 @@
     "cancel": "取消",
     "reset": "重置",
     "acquiringGPS": "正在获取GPS信号...",
-    "startTrackingInfo": "开始追踪以查看位置信息"
+    "startTrackingInfo": "开始追踪以查看位置信息",
+    "acceleration": "加速度",
+    "gyroscope": "陀螺仪",
+    "magnetometer": "磁力计",
+    "barometer": "气压计",
+    "battery": "电池",
+    "altitude": "海拔",
+    "pressure": "气压",
+    "xAxis": "X轴",
+    "yAxis": "Y轴",
+    "zAxis": "Z轴",
+    "location": "位置",
+    "compass": "指南针",
+    "movement": "运动状态",
+    "stability": "设备稳定性",
+    "environment": "环境信息",
+    "movementLevel": {
+      "calm": "平静",
+      "moderate": "轻微",
+      "active": "活跃",
+      "intense": "剧烈"
+    },
+    "stabilityLevel": {
+      "excellent": "极佳",
+      "good": "良好",
+      "fair": "一般",
+      "poor": "较差"
+    },
+    "weather": {
+      "rising": "上升",
+      "falling": "下降",
+      "stable": "稳定"
+    }
   },
   "statistics": {
     "title": "骑行统计",
@@ -53,6 +85,7 @@
   "settings": {
     "title": "设置",
     "display": "显示",
+    "appearance": "外观",
     "fullScreen": "全屏模式",
     "fullScreenDesc": "隐藏状态栏并使用全屏",
     "keepAwake": "保持屏幕常亮",

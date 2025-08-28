@@ -4,6 +4,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useI18n } from '@/hooks/useI18n';
+import { useThemeContext, type ThemeMode } from '@/hooks/useThemeContext';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
@@ -17,18 +18,17 @@ const { width } = Dimensions.get('window');
 interface SettingsState {
   isFullScreen: boolean;
   keepAwake: boolean;
-  darkMode: 'auto' | 'light' | 'dark';
 }
 
 export default function SettingsScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const { t } = useI18n();
+  const { themeMode, setThemeMode } = useThemeContext();
 
   const [settings, setSettings] = useState<SettingsState>({
     isFullScreen: false,
     keepAwake: false,
-    darkMode: 'auto',
   });
 
   useEffect(() => {
@@ -102,22 +102,12 @@ export default function SettingsScreen() {
     }
   };
 
-  const changeDarkMode = async (mode: 'auto' | 'light' | 'dark') => {
+  const changeDarkMode = async (mode: ThemeMode) => {
     try {
-      const newSettings = { ...settings, darkMode: mode };
-      await saveSettings(newSettings);
-
-      // Note: For full dark mode implementation, you would typically need to modify
-      // the app's theme provider to respect this setting
-      Alert.alert(
-        'Dark Mode',
-        `Dark mode set to ${mode}. App will use this setting on next restart.`,
-        [{ text: 'OK' }]
-      );
-
+      await setThemeMode(mode);
     } catch (error) {
       console.error('Error changing dark mode:', error);
-      Alert.alert('Error', 'Failed to change dark mode setting');
+      Alert.alert(t('common.error'), 'Failed to change dark mode setting');
     }
   };
 
@@ -179,7 +169,7 @@ export default function SettingsScreen() {
 
         {/* Appearance Settings */}
         <View style={styles.section}>
-          <ThemedText type="subtitle" style={styles.sectionTitle}>Appearance</ThemedText>
+          <ThemedText type="subtitle" style={styles.sectionTitle}>{t('settings.appearance')}</ThemedText>
 
           {/* Dark Mode Settings */}
           <View style={[styles.settingCard, { backgroundColor: colors.background }]}>
@@ -187,9 +177,9 @@ export default function SettingsScreen() {
               <View style={styles.settingHeader}>
                 <MaterialIcons name="dark-mode" size={24} color={colors.tint} />
                 <View style={styles.settingText}>
-                  <ThemedText style={styles.settingTitle}>Dark Mode</ThemedText>
+                  <ThemedText style={styles.settingTitle}>{t('settings.darkMode')}</ThemedText>
                   <ThemedText style={styles.settingDescription}>
-                    Choose your preferred theme
+                    {t('settings.darkModeDesc')}
                   </ThemedText>
                 </View>
               </View>
@@ -201,17 +191,17 @@ export default function SettingsScreen() {
                   <ThemedText
                     style={[
                       styles.darkModeText,
-                      settings.darkMode === mode && { color: colors.tint, fontWeight: 'bold' }
+                      themeMode === mode && { color: colors.tint, fontWeight: 'bold' }
                     ]}
                     onPress={() => changeDarkMode(mode)}
                   >
-                    {mode.charAt(0).toUpperCase() + mode.slice(1)}
+                    {t(`settings.${mode}`)}
                   </ThemedText>
                   <Switch
-                    value={settings.darkMode === mode}
+                    value={themeMode === mode}
                     onValueChange={() => changeDarkMode(mode)}
                     trackColor={{ false: colors.tabIconDefault, true: colors.tint }}
-                    thumbColor={settings.darkMode === mode ? '#ffffff' : '#f4f3f4'}
+                    thumbColor={themeMode === mode ? '#ffffff' : '#f4f3f4'}
                   />
                 </View>
               ))}
@@ -262,9 +252,9 @@ export default function SettingsScreen() {
             </View>
 
             <View style={styles.statusRow}>
-              <ThemedText style={styles.statusLabel}>Theme:</ThemedText>
+              <ThemedText style={styles.statusLabel}>{t('settings.darkMode')}:</ThemedText>
               <ThemedText style={styles.statusValue}>
-                {settings.darkMode.charAt(0).toUpperCase() + settings.darkMode.slice(1)}
+                {t(`settings.${themeMode}`)}
               </ThemedText>
             </View>
 

@@ -53,6 +53,7 @@
   "settings": {
     "title": "設定",
     "display": "表示",
+    "appearance": "外観",
     "fullScreen": "フルスクリーンモード",
     "fullScreenDesc": "ステータスバーを非表示にしてフルスクリーンを使用",
     "keepAwake": "画面常時点灯",

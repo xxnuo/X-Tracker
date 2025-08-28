@@ -31,7 +31,39 @@
     "cancel": "Cancel",
     "reset": "Reset",
     "acquiringGPS": "Acquiring GPS signal...",
-    "startTrackingInfo": "Start tracking to see location information"
+    "startTrackingInfo": "Start tracking to see location information",
+    "acceleration": "Acceleration",
+    "gyroscope": "Gyroscope",
+    "magnetometer": "Magnetometer",
+    "barometer": "Barometer",
+    "battery": "Battery",
+    "altitude": "Altitude",
+    "pressure": "Pressure",
+    "xAxis": "X",
+    "yAxis": "Y",
+    "zAxis": "Z",
+    "location": "Location",
+    "compass": "Compass",
+    "movement": "Movement",
+    "stability": "Stability",
+    "environment": "Environment",
+    "movementLevel": {
+      "calm": "Calm",
+      "moderate": "Moderate",
+      "active": "Active",
+      "intense": "Intense"
+    },
+    "stabilityLevel": {
+      "excellent": "Excellent",
+      "good": "Good",
+      "fair": "Fair",
+      "poor": "Poor"
+    },
+    "weather": {
+      "rising": "Rising",
+      "falling": "Falling",
+      "stable": "Stable"
+    }
   },
   "statistics": {
     "title": "Ride Statistics",
@@ -53,6 +85,7 @@
   "settings": {
     "title": "Settings",
     "display": "Display",
+    "appearance": "Appearance",
     "fullScreen": "Full Screen Mode",
     "fullScreenDesc": "Hide status bar and use full screen",
     "keepAwake": "Keep Screen Awake",
