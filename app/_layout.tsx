@@ -5,6 +5,8 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+// Initialize i18n
+import '@/locales';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();

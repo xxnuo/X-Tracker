@@ -2,6 +2,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { useI18n } from '@/hooks/useI18n';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useEffect, useState } from 'react';
@@ -21,6 +22,7 @@ interface RideRecord {
 export default function StatisticsScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  const { t } = useI18n();
 
   const [rideHistory, setRideHistory] = useState<RideRecord[]>([]);
   const [totalStats, setTotalStats] = useState({
@@ -63,7 +65,7 @@ export default function StatisticsScreen() {
         avgSpeed: 7.62, // ~27.4 km/h
       },
     ];
-    
+
     setRideHistory(mockHistory);
     calculateTotalStats(mockHistory);
   };
@@ -120,18 +122,18 @@ export default function StatisticsScreen() {
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <ThemedText type="title" style={styles.headerTitle}>X-Tracker Statistics</ThemedText>
+          <ThemedText type="title" style={styles.headerTitle}>{t('statistics.title')}</ThemedText>
         </View>
 
         {/* Overall Stats */}
         <View style={styles.section}>
-          <ThemedText type="subtitle" style={styles.sectionTitle}>Overall Statistics</ThemedText>
-          
+          <ThemedText type="subtitle" style={styles.sectionTitle}>{t('statistics.totalStats')}</ThemedText>
+
           <View style={styles.statsGrid}>
             <View style={[styles.statCard, { backgroundColor: colors.background }]}>
               <MaterialIcons name="location-on" size={24} color={colors.tint} />
               <ThemedText style={styles.statValue}>{formatDistance(totalStats.totalDistance)}</ThemedText>
-              <ThemedText style={styles.statLabel}>Total Distance</ThemedText>
+              <ThemedText style={styles.statLabel}>{t('statistics.totalDistance')}</ThemedText>
             </View>
 
             <View style={[styles.statCard, { backgroundColor: colors.background }]}>
@@ -157,7 +159,7 @@ export default function StatisticsScreen() {
         {/* Recent Rides */}
         <View style={styles.section}>
           <ThemedText type="subtitle" style={styles.sectionTitle}>Recent Rides</ThemedText>
-          
+
           {rideHistory.length === 0 ? (
             <View style={[styles.emptyState, { backgroundColor: colors.background }]}>
               <FontAwesome5 name="bicycle" size={48} color={colors.tabIconDefault} />
@@ -175,18 +177,18 @@ export default function StatisticsScreen() {
                     </View>
                     <ThemedText style={styles.rideDuration}>{formatTime(ride.duration)}</ThemedText>
                   </View>
-                  
+
                   <View style={styles.rideStats}>
                     <View style={styles.rideStat}>
                       <ThemedText style={styles.rideStatLabel}>Distance</ThemedText>
                       <ThemedText style={styles.rideStatValue}>{formatDistance(ride.distance)}</ThemedText>
                     </View>
-                    
+
                     <View style={styles.rideStat}>
                       <ThemedText style={styles.rideStatLabel}>Avg Speed</ThemedText>
                       <ThemedText style={styles.rideStatValue}>{formatSpeed(ride.avgSpeed)}</ThemedText>
                     </View>
-                    
+
                     <View style={styles.rideStat}>
                       <ThemedText style={styles.rideStatLabel}>Max Speed</ThemedText>
                       <ThemedText style={styles.rideStatValue}>{formatSpeed(ride.maxSpeed)}</ThemedText>
@@ -201,7 +203,7 @@ export default function StatisticsScreen() {
         {/* Monthly Summary */}
         <View style={styles.section}>
           <ThemedText type="subtitle" style={styles.sectionTitle}>This Month</ThemedText>
-          
+
           <View style={[styles.monthlyCard, { backgroundColor: colors.background }]}>
             <View style={styles.monthlyRow}>
               <View style={styles.monthlyItem}>
@@ -213,7 +215,7 @@ export default function StatisticsScreen() {
                   <ThemedText style={styles.monthlyLabel}>Distance</ThemedText>
                 </View>
               </View>
-              
+
               <View style={styles.monthlyItem}>
                 <FontAwesome5 name="bicycle" size={20} color={colors.tint} />
                 <View>
@@ -222,7 +224,7 @@ export default function StatisticsScreen() {
                 </View>
               </View>
             </View>
-            
+
             <View style={styles.monthlyRow}>
               <View style={styles.monthlyItem}>
                 <MaterialIcons name="timer" size={20} color={colors.tint} />
@@ -233,7 +235,7 @@ export default function StatisticsScreen() {
                   <ThemedText style={styles.monthlyLabel}>Time</ThemedText>
                 </View>
               </View>
-              
+
               <View style={styles.monthlyItem}>
                 <MaterialIcons name="trending-up" size={20} color={colors.tint} />
                 <View>
@@ -253,7 +255,7 @@ export default function StatisticsScreen() {
   function getMonthlyDistance(): number {
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
-    
+
     return rideHistory
       .filter(ride => {
         const rideDate = new Date(ride.date);
@@ -265,7 +267,7 @@ export default function StatisticsScreen() {
   function getMonthlyRides(): number {
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
-    
+
     return rideHistory.filter(ride => {
       const rideDate = new Date(ride.date);
       return rideDate.getMonth() === currentMonth && rideDate.getFullYear() === currentYear;
@@ -275,7 +277,7 @@ export default function StatisticsScreen() {
   function getMonthlyTime(): number {
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
-    
+
     return rideHistory
       .filter(ride => {
         const rideDate = new Date(ride.date);
@@ -287,7 +289,7 @@ export default function StatisticsScreen() {
   function getMonthlyAvgSpeed(): number {
     const monthlyDistance = getMonthlyDistance();
     const monthlyTime = getMonthlyTime();
-    
+
     return monthlyTime > 0 ? monthlyDistance / monthlyTime : 0;
   }
 }

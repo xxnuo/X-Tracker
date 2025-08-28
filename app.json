@@ -58,7 +58,15 @@
           "isAndroidForegroundServiceEnabled": true
         }
       ],
-      "expo-localization",
+      [
+        "expo-localization",
+        {
+          "supportedLocales": {
+            "ios": ["en", "zh", "ja"],
+            "android": ["en", "zh-CN", "ja-JP"]
+          }
+        }
+      ],
       [
         "expo-screen-orientation",
         {

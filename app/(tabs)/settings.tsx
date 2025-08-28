@@ -1,7 +1,9 @@
+import { LanguageSelector } from '@/components/LanguageSelector';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { useI18n } from '@/hooks/useI18n';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
@@ -21,6 +23,7 @@ interface SettingsState {
 export default function SettingsScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  const { t } = useI18n();
 
   const [settings, setSettings] = useState<SettingsState>({
     isFullScreen: false,
@@ -55,7 +58,7 @@ export default function SettingsScreen() {
       setSettings(newSettings);
     } catch (error) {
       console.error('Error saving settings:', error);
-      Alert.alert('Error', 'Failed to save settings');
+      Alert.alert(t('common.error'), t('settings.failedSaveSettings'));
     }
   };
 
@@ -76,7 +79,7 @@ export default function SettingsScreen() {
 
     } catch (error) {
       console.error('Error toggling fullscreen:', error);
-      Alert.alert('Error', 'Failed to toggle fullscreen mode');
+      Alert.alert(t('common.error'), t('settings.failedToggleFullscreen'));
     }
   };
 
@@ -95,7 +98,7 @@ export default function SettingsScreen() {
 
     } catch (error) {
       console.error('Error toggling keep awake:', error);
-      Alert.alert('Error', 'Failed to toggle screen keep awake');
+      Alert.alert(t('common.error'), t('settings.failedToggleKeepAwake'));
     }
   };
 
@@ -124,12 +127,12 @@ export default function SettingsScreen() {
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <ThemedText type="title" style={styles.headerTitle}>X-Tracker Settings</ThemedText>
+          <ThemedText type="title" style={styles.headerTitle}>{t('settings.title')}</ThemedText>
         </View>
 
         {/* Display Settings */}
         <View style={styles.section}>
-          <ThemedText type="subtitle" style={styles.sectionTitle}>Display Settings</ThemedText>
+          <ThemedText type="subtitle" style={styles.sectionTitle}>{t('settings.display')}</ThemedText>
 
           {/* Full Screen Setting */}
           <View style={[styles.settingCard, { backgroundColor: colors.background }]}>
@@ -137,9 +140,9 @@ export default function SettingsScreen() {
               <View style={styles.settingHeader}>
                 <MaterialIcons name="fullscreen" size={24} color={colors.tint} />
                 <View style={styles.settingText}>
-                  <ThemedText style={styles.settingTitle}>Full Screen Mode</ThemedText>
+                  <ThemedText style={styles.settingTitle}>{t('settings.fullScreen')}</ThemedText>
                   <ThemedText style={styles.settingDescription}>
-                    Hide status bar for immersive experience
+                    {t('settings.fullScreenDesc')}
                   </ThemedText>
                 </View>
               </View>
@@ -158,9 +161,9 @@ export default function SettingsScreen() {
               <View style={styles.settingHeader}>
                 <MaterialIcons name="lightbulb" size={24} color={colors.tint} />
                 <View style={styles.settingText}>
-                  <ThemedText style={styles.settingTitle}>Keep Screen Awake</ThemedText>
+                  <ThemedText style={styles.settingTitle}>{t('settings.keepAwake')}</ThemedText>
                   <ThemedText style={styles.settingDescription}>
-                    Prevent screen from turning off during rides
+                    {t('settings.keepAwakeDesc')}
                   </ThemedText>
                 </View>
               </View>
@@ -214,6 +217,11 @@ export default function SettingsScreen() {
               ))}
             </View>
           </View>
+        </View>
+
+        {/* Language Settings */}
+        <View style={styles.section}>
+          <LanguageSelector />
         </View>
 
         {/* App Information */}

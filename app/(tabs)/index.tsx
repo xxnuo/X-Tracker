@@ -2,6 +2,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { useI18n } from '@/hooks/useI18n';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import * as Location from 'expo-location';
@@ -26,6 +27,7 @@ interface LocationData {
 export default function BikeComputerScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  const { t } = useI18n();
 
   const [location, setLocation] = useState<LocationData | null>(null);
   const [isTracking, setIsTracking] = useState(false);
@@ -68,12 +70,12 @@ export default function BikeComputerScreen() {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        Alert.alert('Permission Denied', 'Location permission is required for the bike computer to work.');
+        Alert.alert(t('tracker.permissionDenied'), t('tracker.locationPermissionRequired'));
         return;
       }
     } catch (error) {
       console.error('Error requesting location permission:', error);
-      Alert.alert('Error', 'Failed to request location permission.');
+      Alert.alert(t('tracker.error'), t('tracker.failedLocationPermission'));
     }
   };
 
@@ -157,7 +159,7 @@ export default function BikeComputerScreen() {
       );
     } catch (error) {
       console.error('Error starting location tracking:', error);
-      Alert.alert('Error', 'Failed to start tracking. Please check your location settings.');
+      Alert.alert(t('tracker.error'), t('tracker.startTrackingFailed'));
     }
   };
 
@@ -217,7 +219,7 @@ export default function BikeComputerScreen() {
 
       {/* Main Speed Display */}
       <View style={[styles.speedContainer, { backgroundColor: colors.background }]}>
-        <ThemedText style={styles.speedLabel}>SPEED</ThemedText>
+        <ThemedText style={styles.speedLabel}>{t('tracker.speed').toUpperCase()}</ThemedText>
         <ThemedText style={styles.speedValue}>
           {formatSpeed(currentSpeed)}
         </ThemedText>
@@ -228,25 +230,25 @@ export default function BikeComputerScreen() {
       <View style={styles.statsGrid}>
         <View style={[styles.statBox, { backgroundColor: colors.background }]}>
           <MaterialIcons name="timer" size={20} color={colors.text} />
-          <ThemedText style={styles.statLabel}>TIME</ThemedText>
+          <ThemedText style={styles.statLabel}>{t('tracker.time').toUpperCase()}</ThemedText>
           <ThemedText style={styles.statValue}>{formatTime(elapsedTime)}</ThemedText>
         </View>
 
         <View style={[styles.statBox, { backgroundColor: colors.background }]}>
           <MaterialIcons name="location-on" size={20} color={colors.text} />
-          <ThemedText style={styles.statLabel}>DISTANCE</ThemedText>
+          <ThemedText style={styles.statLabel}>{t('tracker.distance').toUpperCase()}</ThemedText>
           <ThemedText style={styles.statValue}>{formatDistance(distance)}</ThemedText>
         </View>
 
         <View style={[styles.statBox, { backgroundColor: colors.background }]}>
           <MaterialIcons name="speed" size={20} color={colors.text} />
-          <ThemedText style={styles.statLabel}>MAX SPEED</ThemedText>
+          <ThemedText style={styles.statLabel}>{t('tracker.maxSpeed').toUpperCase()}</ThemedText>
           <ThemedText style={styles.statValue}>{formatSpeed(maxSpeed)} km/h</ThemedText>
         </View>
 
         <View style={[styles.statBox, { backgroundColor: colors.background }]}>
           <MaterialIcons name="trending-up" size={20} color={colors.text} />
-          <ThemedText style={styles.statLabel}>AVG SPEED</ThemedText>
+          <ThemedText style={styles.statLabel}>{t('tracker.avgSpeed').toUpperCase()}</ThemedText>
           <ThemedText style={styles.statValue}>{formatSpeed(avgSpeed)} km/h</ThemedText>
         </View>
       </View>
@@ -258,7 +260,7 @@ export default function BikeComputerScreen() {
             <MaterialIcons name="location-on" size={20} color={colors.tint} />
             <ThemedText style={styles.locationTitle}>Location Information</ThemedText>
           </View>
-          
+
           <View style={styles.locationGrid}>
             <View style={styles.locationItem}>
               <ThemedText style={styles.locationLabel}>Latitude:</ThemedText>
@@ -266,35 +268,35 @@ export default function BikeComputerScreen() {
                 {location.coords.latitude.toFixed(6)}°
               </ThemedText>
             </View>
-            
+
             <View style={styles.locationItem}>
               <ThemedText style={styles.locationLabel}>Longitude:</ThemedText>
               <ThemedText style={styles.locationValue}>
                 {location.coords.longitude.toFixed(6)}°
               </ThemedText>
             </View>
-            
+
             <View style={styles.locationItem}>
               <ThemedText style={styles.locationLabel}>Altitude:</ThemedText>
               <ThemedText style={styles.locationValue}>
                 {location.coords.altitude ? `${location.coords.altitude.toFixed(1)}m` : 'N/A'}
               </ThemedText>
             </View>
-            
+
             <View style={styles.locationItem}>
               <ThemedText style={styles.locationLabel}>GPS Time:</ThemedText>
               <ThemedText style={styles.locationValue}>
                 {new Date(location.timestamp).toLocaleTimeString()}
               </ThemedText>
             </View>
-            
+
             <View style={styles.locationItem}>
               <ThemedText style={styles.locationLabel}>GPS Accuracy:</ThemedText>
               <ThemedText style={styles.locationValue}>
                 {location.coords.accuracy ? `±${location.coords.accuracy.toFixed(1)}m` : 'N/A'}
               </ThemedText>
             </View>
-            
+
             <View style={styles.locationItem}>
               <ThemedText style={styles.locationLabel}>Heading:</ThemedText>
               <ThemedText style={styles.locationValue}>
@@ -311,7 +313,7 @@ export default function BikeComputerScreen() {
           <View style={styles.infoRow}>
             <MaterialIcons name="location-off" size={20} color={colors.tabIconDefault} />
             <ThemedText style={styles.noLocationText}>
-              {isTracking ? 'Acquiring GPS signal...' : 'Start tracking to see location information'}
+              {isTracking ? t('tracker.acquiringGPS') : t('tracker.startTrackingInfo')}
             </ThemedText>
           </View>
         </View>
@@ -327,13 +329,13 @@ export default function BikeComputerScreen() {
           ]}
           onPress={isTracking ? stopTracking : startTracking}
         >
-          <Ionicons 
-            name={isTracking ? "stop" : "play"} 
-            size={24} 
-            color="white" 
+          <Ionicons
+            name={isTracking ? "stop" : "play"}
+            size={24}
+            color="white"
           />
           <Text style={styles.buttonText}>
-            {isTracking ? 'STOP' : 'START'}
+            {isTracking ? t('tracker.stopRide').toUpperCase() : t('tracker.startRide').toUpperCase()}
           </Text>
         </TouchableOpacity>
 
@@ -342,7 +344,7 @@ export default function BikeComputerScreen() {
           onPress={resetTracking}
         >
           <MaterialIcons name="refresh" size={24} color="white" />
-          <Text style={styles.buttonText}>RESET</Text>
+          <Text style={styles.buttonText}>{t('tracker.resetRide').toUpperCase()}</Text>
         </TouchableOpacity>
       </View>
     </ThemedView>
@@ -352,61 +354,62 @@ export default function BikeComputerScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 16,
+    paddingBottom: 90, // Reduced padding for button space
   },
   header: {
     alignItems: 'center',
-    marginTop: 40,
-    marginBottom: 30,
+    marginTop: 20, // Reduced from 40
+    marginBottom: 15, // Reduced from 30
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 20, // Reduced from 24
     fontWeight: 'bold',
   },
   speedContainer: {
     alignItems: 'center',
-    padding: 30,
-    marginBottom: 30,
-    borderRadius: 20,
+    padding: 20, // Reduced from 30
+    marginBottom: 15, // Reduced from 30
+    borderRadius: 16,
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    minHeight: 180,
+    minHeight: 120, // Reduced from 180
   },
   speedLabel: {
-    fontSize: 16,
+    fontSize: 14, // Reduced from 16
     fontWeight: '600',
     opacity: 0.8,
-    marginBottom: 10,
+    marginBottom: 5, // Reduced from 10
   },
   speedValue: {
-    fontSize: 56,
+    fontSize: 42, // Reduced from 56
     fontWeight: 'bold',
     fontFamily: 'SpaceMono',
-    lineHeight: 64,
+    lineHeight: 48, // Reduced from 64
     textAlign: 'center',
     includeFontPadding: false,
   },
   speedUnit: {
-    fontSize: 18,
+    fontSize: 16, // Reduced from 18
     fontWeight: '500',
     opacity: 0.8,
-    marginTop: 8,
+    marginTop: 4, // Reduced from 8
   },
   statsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: 12, // Reduced from 20
   },
   statBox: {
-    width: (width - 60) / 2,
-    padding: 20,
-    borderRadius: 15,
+    width: (width - 50) / 2, // Reduced container width
+    padding: 12, // Reduced from 20
+    borderRadius: 12, // Reduced from 15
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 8, // Reduced from 15
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -414,21 +417,21 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   statLabel: {
-    fontSize: 12,
+    fontSize: 11, // Reduced from 12
     fontWeight: '600',
     opacity: 0.7,
-    marginTop: 8,
-    marginBottom: 5,
+    marginTop: 4, // Reduced from 8
+    marginBottom: 2, // Reduced from 5
   },
   statValue: {
-    fontSize: 18,
+    fontSize: 16, // Reduced from 18
     fontWeight: 'bold',
     fontFamily: 'SpaceMono',
   },
   infoContainer: {
-    padding: 15,
-    borderRadius: 15,
-    marginBottom: 20,
+    padding: 12, // Reduced from 15
+    borderRadius: 12, // Reduced from 15
+    marginBottom: 8, // Further reduced
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -444,16 +447,20 @@ const styles = StyleSheet.create({
   controlContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 15,
+    gap: 12, // Reduced from 15
+    position: 'absolute',
+    bottom: 16, // Reduced from 20
+    left: 16, // Reduced from 20
+    right: 16, // Reduced from 20
   },
   controlButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 16,
-    borderRadius: 15,
-    gap: 8,
+    padding: 12, // Reduced from 16
+    borderRadius: 12, // Reduced from 15
+    gap: 6, // Reduced from 8
   },
   startButton: {
     flex: 2,
@@ -463,13 +470,13 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 14, // Reduced from 16
     fontWeight: 'bold',
   },
   locationContainer: {
-    padding: 20,
-    borderRadius: 15,
-    marginBottom: 20,
+    padding: 16, // Reduced from 20
+    borderRadius: 12, // Reduced from 15
+    marginBottom: 12, // Reduced from 20
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -479,12 +486,12 @@ const styles = StyleSheet.create({
   locationHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 8, // Reduced from 10
   },
   locationTitle: {
-    fontSize: 16,
+    fontSize: 14, // Reduced from 16
     fontWeight: '600',
-    marginLeft: 8,
+    marginLeft: 6, // Reduced from 8
   },
   locationGrid: {
     flexDirection: 'row',
@@ -493,21 +500,21 @@ const styles = StyleSheet.create({
   },
   locationItem: {
     width: '50%',
-    marginBottom: 12,
-    paddingRight: 8,
+    marginBottom: 8, // Reduced from 12
+    paddingRight: 6, // Reduced from 8
   },
   locationLabel: {
-    fontSize: 14,
+    fontSize: 12, // Reduced from 14
     fontWeight: '500',
     opacity: 0.8,
   },
   locationValue: {
-    fontSize: 14,
+    fontSize: 12, // Reduced from 14
     fontWeight: '600',
     fontFamily: 'SpaceMono',
   },
   noLocationText: {
-    fontSize: 14,
+    fontSize: 13, // Reduced from 14
     fontWeight: '500',
     opacity: 0.8,
     textAlign: 'center',
